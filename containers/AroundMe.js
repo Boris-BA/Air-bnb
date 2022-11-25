@@ -9,6 +9,8 @@ import * as Location from "expo-location";
 import { useState, useEffect } from "react";
 import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import axios from "axios";
+import { TouchableOpacity } from "react-native-web";
+import { useNavigation } from "@react-navigation/core";
 
 const arrayOfMarkers = [
   {
@@ -25,12 +27,13 @@ const arrayOfMarkers = [
   },
 ];
 
-export default function AroundMe({ setToken }) {
+export default function AroundMe() {
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [coords, setCoords] = useState();
   const [loadingAxios, setIsLoadingAxios] = useState(true);
   const [data, setData] = useState();
+  const navigation = useNavigation();
 
   //   console.log(coords);
   useEffect(() => {
@@ -63,9 +66,11 @@ export default function AroundMe({ setToken }) {
         const response = await axios.get(
           "https://express-airbnb-api.herokuapp.com/rooms"
         );
-        console.log(response.data);
+        // console.log(response.data);
         setData(response.data);
         setIsLoadingAxios(false);
+        // console.log(response.data.location);
+        // console.log(response.data.location[0]);
       } catch (error) {
         console.log(error.message);
       }
@@ -86,16 +91,16 @@ export default function AroundMe({ setToken }) {
           <View style={styles.container}>
             <MapView
               style={styles.map}
-              provider={PROVIDER_GOOGLE}
+              // provider={PROVIDER_GOOGLE}
               showsUserLocation
               initialRegion={{
                 latitude: coords.latitude,
                 longitude: coords.longitude,
-                latitudeDelta: 0.02,
-                longitudeDelta: 0.02,
+                latitudeDelta: 0.2,
+                longitudeDelta: 0.2,
               }}
             >
-              {arrayOfMarkers.map((marker) => {
+              {/* {arrayOfMarkers.map((marker) => {
                 return (
                   <Marker
                     key={marker.latitude}
@@ -107,7 +112,40 @@ export default function AroundMe({ setToken }) {
                     description={marker.description}
                   />
                 );
-              })}
+              })} */}
+
+              {!loadingAxios &&
+                data.map((marker, index) => {
+                  // console.log(marker);
+                  return (
+                    <Marker
+                      key={index}
+                      coordinate={{
+                        latitude: marker.location[1],
+                        longitude: marker.location[0],
+                      }}
+                      title={marker.title}
+                      description={marker.description}
+                      onCalloutPress={() => {
+                        navigation.navigate("Room", {
+                          roomId: marker._id,
+                        });
+                      }}
+                    />
+                    // <Marker
+                    //   key={position._id}
+                    //   coordinate={{
+                    //     latitude: position.location[1],
+                    //     longitude: position.location[0],
+                    //   }}
+                    //   title={position.title}
+                    //   description={position.price + "$"}
+                    //   onCalloutPress={() => {
+                    //     navigation.navigate("Room", { roomId: position._id });
+                    //   }}
+                    // />
+                  );
+                })}
             </MapView>
           </View>
         </>

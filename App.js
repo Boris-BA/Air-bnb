@@ -13,6 +13,7 @@ import SplashScreen from "./containers/SplashScreen";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Location from "expo-location";
+import { Image } from "react-native";
 
 import Room from "./containers/Room";
 import AroundMe from "./containers/AroundMe";
@@ -20,9 +21,24 @@ import AroundMe from "./containers/AroundMe";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+// function LogoTitle() {
+//   return (
+//     <Image
+//       style={{ width: 30, height: 30 }}
+//       source={require("./images/anne.jpg")}
+//     />
+//   );
+// }
+function LogoTitle() {
+  return <FontAwesome5 name="airbnb" size={24} color="red" />;
+}
+
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
+  const [userId, setUserId] = useState(null);
+  // console.log(userToken);
+  // console.log(userId);
 
   const setToken = async (token) => {
     if (token) {
@@ -50,12 +66,29 @@ export default function App() {
     bootstrapAsync();
   }, []);
 
+  const setId = async (userId) => {
+    if (userId) {
+      await AsyncStorage.setItem("userId", userId);
+    } else {
+      await AsyncStorage.removeItem("userId", userId);
+    }
+    setUserId(userId);
+  };
+  useEffect(() => {
+    const bootstrapAsync = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+
+      setUserId(userId);
+      setIsLoading(false);
+    };
+
+    bootstrapAsync();
+  }, []);
+
   if (isLoading === true) {
     // We haven't finished checking for the token yet
     return null;
   }
-
-  //Demande d'autorisation géolocalisation
 
   return (
     <NavigationContainer>
@@ -64,10 +97,10 @@ export default function App() {
           // No token found, user isn't signed in
           <>
             <Stack.Screen name="SignIn">
-              {() => <SignInScreen setToken={setToken} />}
+              {() => <SignInScreen setToken={setToken} setId={setId} />}
             </Stack.Screen>
             <Stack.Screen name="SignUp">
-              {() => <SignUpScreen setToken={setToken} />}
+              {() => <SignUpScreen setToken={setToken} setId={setId} />}
             </Stack.Screen>
           </>
         ) : (
@@ -102,9 +135,11 @@ export default function App() {
                         name="Home"
                         options={
                           {
-                            title: "My app",
-                            headerStyle: { backgroundColor: "red" },
-                            headerTitleStyle: { color: "white" },
+                            // title: "My app",
+                            // headerStyle: { backgroundColor: "red" },
+                            // headerTitleStyle: { color: "white" },
+                            // headerTitle: () => <LogoTitle />,
+                            headerTitle: (props) => <LogoTitle {...props} />,
                           }
                           // {
                           //   headerLeft: () => (
@@ -126,7 +161,15 @@ export default function App() {
                           title: "User Profile",
                         }}
                       >
-                        {() => <ProfileScreen />}
+                        {() => (
+                          <ProfileScreen
+                            userToken={userToken}
+                            userId={userId}
+                            setToken={setToken}
+                            setUserId={setUserId}
+                            a={"test"}
+                          />
+                        )}
                       </Stack.Screen>
                       <Stack.Screen
                         name="Room"
@@ -160,7 +203,33 @@ export default function App() {
                           title: "Around Me",
                         }}
                       >
-                        {() => <AroundMe setToken={setToken} />}
+                        {() => <AroundMe />}
+                      </Stack.Screen>
+                    </Stack.Navigator>
+                  )}
+                </Tab.Screen>
+                <Tab.Screen
+                  name="TabProfil"
+                  options={{
+                    tabBarLabel: "Profil",
+                    tabBarIcon: ({ color, size }) => (
+                      <MaterialCommunityIcons
+                        name="google-maps"
+                        size={size}
+                        color={color}
+                      />
+                    ),
+                  }}
+                >
+                  {() => (
+                    <Stack.Navigator>
+                      <Stack.Screen
+                        name="Profil"
+                        options={{
+                          title: "Profil",
+                        }}
+                      >
+                        {() => <ProfileScreen />}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}

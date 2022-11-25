@@ -14,7 +14,7 @@ import { useState } from "react";
 import axios from "axios";
 import { FontAwesome } from "@expo/vector-icons";
 
-const SignInScreen = ({ setToken }) => {
+const SignInScreen = ({ setToken, setId }) => {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
@@ -114,8 +114,11 @@ const SignInScreen = ({ setToken }) => {
                   }
                   console.log(response.data);
                   console.log(response.data.token);
+                  console.log(response.data.id);
                   const userToken = response.data.token;
+                  const userId = response.data.id;
                   setToken(userToken);
+                  setId(userId);
                 } catch (error) {
                   // console.log(error.message);
                   // console.log(error.response);

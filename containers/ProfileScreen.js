@@ -1,11 +1,20 @@
-import { useRoute } from "@react-navigation/core";
 import { Text, View } from "react-native";
 
-export default function ProfileScreen() {
-  const { params } = useRoute();
+export default function ProfileScreen({
+  setId,
+  setToken,
+  userId,
+  userToken,
+  a,
+}) {
+  console.log(userId);
+  console.log(userToken);
+  console.log(a);
+
   return (
     <View>
-      <Text>user id : {params.userId}</Text>
+      <Text>Profil: {userId} </Text>
+      {/* <Text>user id : {params}</Text> */}
     </View>
   );
 }

@@ -13,7 +13,7 @@ import {
 import axios from "axios";
 import parseErrorStack from "react-native/Libraries/Core/Devtools/parseErrorStack";
 
-export default function SignUpScreen({ setToken }) {
+export default function SignUpScreen({ setToken, setId }) {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
@@ -134,6 +134,7 @@ export default function SignUpScreen({ setToken }) {
                   console.log(response.data.token);
                   const userToken = response.data.token;
                   setToken(userToken);
+                  setId(userId);
 
                   console.log(response);
                   if (response.status === 200) {

@@ -1,7 +1,9 @@
 import { useRoute } from "@react-navigation/core";
-import { Text, View, FlatList } from "react-native";
+import { Text, View, FlatList, Image, ScrollView } from "react-native";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { ActivityIndicator } from "react-native-paper";
+import Swiper from "react-native-swiper";
 
 export default function Room() {
   const { params } = useRoute();
@@ -26,14 +28,48 @@ export default function Room() {
       }
     };
     fetchData();
-  }, [id]);
+  }, []);
   // console.log(data?._id);
   return (
     <View>
-      <Text>Room</Text>
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <View>
+          <Text>RoomId : {params.roomId}</Text>
+          <Image style={{ height: 200 }} source={{ uri: data.photos[0].url }} />
+          <ScrollView>
+            <Swiper
+              style={{ height: 300 }}
+              dotColor="salmon"
+              activeDotColor="red"
+              autoplay
+            >
+              {data.photos.map((slide, index) => {
+                return (
+                  <View>
+                    <Image
+                      key={index}
+                      source={{ uri: slide.url }}
+                      style={{ height: "100%", width: "100%" }}
+                    />
+                  </View>
+                );
+              })}
+            </Swiper>
+          </ScrollView>
+        </View>
+      )}
+
+      {/* <Text>Room</Text>
       <Text>user id : {params.roomId}</Text>
       <Text>id : </Text>
-      <Text>{!isLoading && data._id}</Text>
+      {isLoading && <ActivityIndicator />}
+      {!isLoading && (
+        <Image style={{ height: 200 }} source={{ uri: data.photos[0].url }} />
+      )} */}
+
+      {/* <Text>{!isLoading && data._id}</Text> */}
       {/* <FlatList
         data={data}
         keyExtractor={(item) => item._id}
