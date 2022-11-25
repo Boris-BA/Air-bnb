@@ -156,22 +156,6 @@ export default function App() {
                       </Stack.Screen>
 
                       <Stack.Screen
-                        name="Profile"
-                        options={{
-                          title: "User Profile",
-                        }}
-                      >
-                        {() => (
-                          <ProfileScreen
-                            userToken={userToken}
-                            userId={userId}
-                            setToken={setToken}
-                            setUserId={setUserId}
-                            a={"test"}
-                          />
-                        )}
-                      </Stack.Screen>
-                      <Stack.Screen
                         name="Room"
                         options={{
                           title: "Room",
@@ -229,7 +213,15 @@ export default function App() {
                           title: "Profil",
                         }}
                       >
-                        {() => <ProfileScreen />}
+                        {() => (
+                          <ProfileScreen
+                            userToken={userToken}
+                            userId={userId}
+                            setToken={setToken}
+                            setUserId={setUserId}
+                            a={"test"}
+                          />
+                        )}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}

@@ -13,7 +13,7 @@ export default function ProfileScreen({
 
   return (
     <View>
-      <Text>Profil: {userId} </Text>
+      <Text>Profildd: {userId} </Text>
       {/* <Text>user id : {params}</Text> */}
     </View>
   );
